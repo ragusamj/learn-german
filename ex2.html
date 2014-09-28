@@ -1,0 +1,64 @@
+<a href="ex1.html">Personal Pronouns 1</a><br>
+<a href="ex2.html">Personal Pronouns 2</a><br>
+<a href="ex3.html">Conjugate Regular Verbs 1</a><br>
+<a href="ex4.html">Conjugate Regular Verbs 2</a><br>
+
+<script>
+    var keepGoing = true,
+        personalPronouns = {
+            "i": "ich",
+            "you (singular)": "du",
+            "he": "er",
+            "she": "sie",
+            "they": "sie",
+            "it": "es",
+            "we": "wir",
+            "you (plural)": "ihr",
+            "you (formal)": "Sie"
+        },
+        keys = Object.keys(personalPronouns),
+        length = keys.length,
+        currentKey,
+        userAnswer,
+        actualAnswer,
+        ok,
+        totalCorrect = 0,
+        total = 0;
+    
+    while (keepGoing) {
+        currentKey = getRandomInt(0, length-1);
+        userAnswer = prompt("Translate to German:\n\n" + keys[currentKey]);
+        actualAnswer = personalPronouns[keys[currentKey]];
+        
+        if (typeof actualAnswer === 'object') {
+            ok = inArray(actualAnswer, userAnswer);
+        } else {
+            ok = userAnswer === actualAnswer;
+        }
+        
+        if (ok) {
+            totalCorrect++;
+            keepGoing = confirm("Correct!\n\nKeep going?");
+        } else {
+            keepGoing = confirm("Incorrect :(\nThe answer is: " + actualAnswer);
+        }
+        
+        total++;
+        
+        if (totalCorrect >= 20) keepGoing = false;
+    }
+    
+    alert("Congratulations! \nYou finished the excercise with " + totalCorrect + " answers out of " + total + "!");
+        
+    // Returns a random integer between min and max
+    // Using Math.round() will give you a non-uniform distribution!
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }    
+    
+    function inArray(arr, value) {
+        for (var i = 0; i < arr.length; i++)
+            if (arr[i] === value) return true;
+        return false;
+    }
+</script>

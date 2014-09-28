@@ -1,0 +1,168 @@
+<a href="ex1.html">Personal Pronouns 1</a><br>
+<a href="ex2.html">Personal Pronouns 2</a><br>
+<a href="ex3.html">Conjugate Regular Verbs 1</a><br>
+<a href="ex4.html">Conjugate Regular Verbs 2</a><br>
+
+<script src="underscore.js"></script>
+<script src="underscore.strings.js"></script>
+
+<script>
+    var keepGoing = true,
+        personalPronouns = ["ich", "du", "er / sie / es", "wir", "ihr", "sie / Sie"],
+        verbs = ["lieben", "tun", "reden", "arbeiten"],//, "tanzen", "heißen"],
+        
+        baseConjugateRules = {
+            "ich": "e",
+            "du": "st",
+            "er / sie / es": "t",
+            "wir": "en",
+            "ihr": "t",
+            "sie / Sie": "en"
+        },
+        
+        denConjugateRules = {
+            "ich": "de",
+            "du": "dest",
+            "er / sie / es": "det",
+            "wir": "den",
+            "ihr": "det",
+            "sie / Sie": "den"
+        },
+        
+        tenConjugateRules = {
+            "ich": "te",
+            "du": "test",
+            "er / sie / es": "tet",
+            "wir": "ten",
+            "ihr": "tet",
+            "sie / Sie": "ten"
+        },
+        
+        zenConjugateRules = {
+            "ich": "ze",
+            "du": "zt",
+            "er / sie / es": "zt",
+            "wir": "zen",
+            "ihr": "zt",
+            "sie / Sie": "zen"
+        },
+        
+        senConjugateRules = {
+            "ich": "ße",
+            "du": "ßt",
+            "er / sie / es": "ßt",
+            "wir": "ßen",
+            "ihr": "ßt",
+            "sie / Sie": "ßen"
+        },
+        
+        nConjugateRules = _.extend({}, baseConjugateRules, {
+            "wir": "n",
+            "sie / Sie": "n"
+        }),
+        
+        conjugateRules = {
+            "zen": zenConjugateRules,
+            "ßen": senConjugateRules,
+            "ten": tenConjugateRules,
+            "den": denConjugateRules,
+            "en": baseConjugateRules,
+            "n": nConjugateRules
+        },
+        
+        rulesPrecedence = ["zen", "ßen", "ten", "den", "en", "n"],
+        
+        currentVerb,
+        currentPronoun,
+        currentSuffix,
+        currentVerbRules,
+        
+        userAnswer,
+        actualAnswer,
+        ok,
+        totalCorrect = 0,
+        total = 0,
+        
+        maxFrequency = 0,
+        frequencyCount = {};
+        
+    function tooFrequent(verb, pronoun) {
+        var key = verb + "," + pronoun;
+        if (frequencyCount.hasOwnProperty(key) && frequencyCount[key] >= maxFrequency) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    function countFrequency(verb, pronoun) {
+        var key = verb + "," + pronoun;
+        if (frequencyCount.hasOwnProperty(key)) {
+            frequencyCount[key]++;
+        } else {
+            frequencyCount[key] = 1;
+        }
+        
+        if (frequencyCount[key] > maxFrequency) {
+            maxFrequency = frequencyCount[key];
+        }
+    }
+    
+    while (keepGoing) {
+        
+        // select verb
+        currentVerb = verbs[getRandomInt(0, verbs.length - 1)];
+        
+        // select pronoun
+        currentPronoun = personalPronouns[getRandomInt(0, personalPronouns.length - 1)];
+        
+        if (tooFrequent(currentVerb, currentPronoun)) continue;
+        countFrequency(currentVerb, currentPronoun);
+        
+        currentVerbRules = null;
+        
+        for (var i = 0; i < rulesPrecedence.length; i++) {
+            if (_(currentVerb).endsWith(rulesPrecedence[i])) {
+                currentSuffix = rulesPrecedence[i];
+                currentVerbRules = conjugateRules[rulesPrecedence[i]];
+                break;
+            }
+        }
+        
+        if (!currentVerbRules) continue;
+        
+        actualAnswer = currentVerb.replace(currentSuffix, currentVerbRules[currentPronoun]);
+        
+        userAnswer = prompt(
+            "Conjugate:\n\nVerb: " + currentVerb + "\nPronoun: " + currentPronoun, 
+            currentVerb.replace(currentSuffix, "")
+        );
+        
+        ok = userAnswer === actualAnswer;
+        
+        if (ok) {
+            totalCorrect++;
+            keepGoing = confirm("Correct!\n\nKeep going?");
+        } else {
+            keepGoing = confirm("Incorrect :(\nThe answer is: " + actualAnswer);
+        }
+        
+        total++;
+        
+        if (totalCorrect >= 20) keepGoing = false;
+    }
+    
+    alert("Congratulations! \nYou finished the excercise with " + totalCorrect + " answers out of " + total + "!");
+        
+    // Returns a random integer between min and max
+    // Using Math.round() will give you a non-uniform distribution!
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }    
+    
+    function inArray(arr, value) {
+        for (var i = 0; i < arr.length; i++)
+            if (arr[i] === value) return true;
+        return false;
+    }
+</script>
